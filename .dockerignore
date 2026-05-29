@@ -1,0 +1,19 @@
+# Keep the build context small and reproducible.
+.git
+.github
+**/.env.local
+**/.env.*.local
+
+# Backend artifacts (rebuilt inside the image)
+backend/vendor
+backend/var
+backend/.phpunit.cache
+backend/config/jwt
+
+# Frontend artifacts (not needed by the backend image)
+frontend/node_modules
+frontend/dist
+
+# Misc
+**/*.log
+docs
