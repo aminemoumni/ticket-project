@@ -1,9 +1,7 @@
 # Support Ticket DevOps
 
-![CI/CD Pipeline](https://github.com/Med-RedaLagciyer/support-ticket-devops/actions/workflows/pipeline.yml/badge.svg)
-
 **Université Ibn Tofail** | Module DevOps | Pr. Soufiane HAMIDA
-Réalisé par : **Mohammed-reda LAGCIYER** & **Mohammed EL BAHI**
+Réalisé par : **Moumni Amin** & **Rafiq Taha**
 
 ## Stack
 
