@@ -21,8 +21,8 @@ Réalisé par : **Moumni Amin** & **Rafiq Taha**
 
 1. Clone repository
     ```bash
-    git clone https://github.com/Med-RedaLagciyer/support-ticket-devops.git
-    cd support-ticket-devops
+    git clone https://github.com/aminemoumni/ticket-project
+    cd ticket-project
 
 2. Créer le fichier .env à la racine du projet
     ```bash
@@ -60,7 +60,7 @@ API (Backend): http://localhost/api
 
 ## Docker Hub
 
-Image: [moumni-rafiq/support-ticket-devops](https://hub.docker.com/r/moumni-rafiq/support-ticket-devops)
+Image: [guegzosis/support-ticket-devops](https://hub.docker.com/repositories/guegzosis/support-ticket-devops)
 
 ## Rapport
 
