@@ -16,13 +16,23 @@ jobs:
     name: Backend-job
     runs-on: ubuntu-latest
 
+    # Ephemeral CI test-database and test JWT passphrase. These are throwaway
+    # values used only inside the runner, not secrets, so they are defined inline
+    # and the pipeline needs no repository secrets to run the backend tests.
+    env:
+      POSTGRES_DB: support_ticket
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app_password
+      JWT_PASSPHRASE: ci_test_passphrase
+      DATABASE_URL: "postgresql://app:app_password@localhost:5432/support_ticket?serverVersion=16&charset=utf8"
+
     services:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}_test
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: support_ticket_test
+          POSTGRES_USER: app
+          POSTGRES_PASSWORD: app_password
         ports:
           - 5432:5432
         options: >-
@@ -30,7 +40,7 @@ jobs:
           --health-interval 5s
           --health-timeout 5s
           --health-retries 5
-          
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -42,12 +52,10 @@ jobs:
           extensions: pdo, pdo_pgsql, intl, zip, mbstring, opcache
 
       - name: Create backend .env
-        env:
-          JWT_PASSPHRASE: ${{ secrets.JWT_PASSPHRASE }}
         run: |
           cp backend/.env.example backend/.env
           echo "JWT_PASSPHRASE=${JWT_PASSPHRASE}" >> backend/.env
-          
+
       - name: Cache Composer dependencies
         uses: actions/cache@v4
         with:
@@ -65,24 +73,16 @@ jobs:
 
       - name: Generate JWT keys
         working-directory: backend
-        env:
-          JWT_PASSPHRASE: ${{ secrets.JWT_PASSPHRASE }}
         run: php bin/console lexik:jwt:generate-keypair
 
       - name: Setup test database
         working-directory: backend
-        env:
-          DATABASE_URL: postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}?serverVersion=16&charset=utf8
-          JWT_PASSPHRASE: ${{ secrets.JWT_PASSPHRASE }}
         run: |
           php bin/console doctrine:database:create --env=test --if-not-exists
           php bin/console doctrine:migrations:migrate --env=test --no-interaction
 
       - name: Run tests
         working-directory: backend
-        env:
-          DATABASE_URL: postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}?serverVersion=16&charset=utf8
-          JWT_PASSPHRASE: ${{ secrets.JWT_PASSPHRASE }}
         run: php bin/phpunit
   
   frontend:
